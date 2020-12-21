@@ -17,7 +17,7 @@ export const Routers = ({ isLoggedIn, user }) => {
             </Route>
 
             <Route exact path="/profile">
-              <Profile />
+              <Profile user={user} />
             </Route>
           </>
         ) : (
