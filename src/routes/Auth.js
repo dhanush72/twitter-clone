@@ -14,7 +14,7 @@ const Auth = () => {
   };
 
   // const onSocialClick = async (e) => {
-  //   const { name } = e.target.name;
+  //   const { name } = e.target;
   //   let provider;
   //   try {
   //     if (name === "google") {
