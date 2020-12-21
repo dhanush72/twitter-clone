@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
 
-const Home = () => {
+const Home = ({ user }) => {
   const [tweet, setTweet] = useState("");
   const [tweets, setTweets] = useState([]);
 
@@ -10,6 +10,7 @@ const Home = () => {
     await db.collection("tweets").add({
       tweet,
       createdAt: Date.now(),
+      creatorId: user.uid,
     });
     setTweet("");
   };
@@ -19,19 +20,14 @@ const Home = () => {
     setTweet(value);
   };
 
-  const getTweets = async () => {
-    const dbTweets = await db.collection("tweets").get();
-    dbTweets.forEach((document) => {
-      const newObject = {
-        ...document.data(),
-        id: document.id,
-      };
-      setTweets((prev) => [newObject, ...prev]);
-    });
-  };
-
   useEffect(() => {
-    getTweets();
+    db.collection("tweets").onSnapshot((snapshot) => {
+      const tweetArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTweets(tweetArray);
+    });
   }, []);
 
   return (
@@ -46,8 +42,8 @@ const Home = () => {
         <input type="submit" value="tweet" />
       </form>
       {tweets.map((data) => (
-        <div>
-          <h4 key={data.id}>{data.tweet}</h4>
+        <div key={data.id}>
+          <h4>{data.tweet}</h4>
         </div>
       ))}
     </>

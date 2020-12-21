@@ -5,11 +5,13 @@ import { authService } from "../firebase";
 function App() {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if (user) {
         setIsLoggedIn(true);
+        setUser(user);
       } else {
         setIsLoggedIn(false);
       }
@@ -17,7 +19,11 @@ function App() {
     });
   }, []);
 
-  return <>{init ? <Routers isLoggedIn={isLoggedIn} /> : "Loading....."}</>;
+  return (
+    <>
+      {init ? <Routers isLoggedIn={isLoggedIn} user={user} /> : "Loading....."}
+    </>
+  );
 }
 
 export default App;
