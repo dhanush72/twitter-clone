@@ -25,7 +25,7 @@ const Tweet = ({ newTweet, isOwner }) => {
   };
 
   const onDeleteClick = async () => {
-    const ok = window.confirm("Are you sure you want to delete this nweet?");
+    const ok = window.confirm("Are you sure you want to delete this tweet?");
     if (ok) {
       await db.doc(`tweets/${newTweet.id}`).delete();
       await storage.refFromURL(newTweet.attachmentUrl).delete();
@@ -61,7 +61,7 @@ const Tweet = ({ newTweet, isOwner }) => {
             )}
           </div>
           {isOwner && (
-            <div class="nweet__actions">
+            <div className="nweet__actions">
               <span onClick={onDeleteClick}>
                 <FontAwesomeIcon icon={faTrash} />
               </span>
