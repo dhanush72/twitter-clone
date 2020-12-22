@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { authService } from "../firebase";
 import { useHistory } from "react-router-dom";
 
-const Profile = ({ user }) => {
+const Profile = ({ user, refreshUser }) => {
   const history = useHistory();
   const [newDisplayName, setNewDisplayName] = useState(user.displayName);
 
@@ -33,7 +33,7 @@ const Profile = ({ user }) => {
         displayName: newDisplayName,
       });
     }
-    setNewDisplayName(user.displayName);
+    refreshUser();
   };
 
   return (

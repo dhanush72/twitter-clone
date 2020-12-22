@@ -11,7 +11,11 @@ function App() {
     authService.onAuthStateChanged((user) => {
       if (user) {
         setIsLoggedIn(true);
-        setUser(user);
+        setUser({
+          displayName: user.displayName,
+          uid: user.uid,
+          updateProfile: (args) => user.updateProfile(args),
+        });
       } else {
         setIsLoggedIn(false);
       }
@@ -19,9 +23,27 @@ function App() {
     });
   }, []);
 
+  // update profile in realtime
+  const refreshUser = () => {
+    const user = authService.currentUser;
+    setUser({
+      displayName: user.displayName,
+      uid: user.uid,
+      updateProfile: (args) => user.updateProfile(args),
+    });
+  };
+
   return (
     <>
-      {init ? <Routers isLoggedIn={isLoggedIn} user={user} /> : "Loading....."}
+      {init ? (
+        <Routers
+          isLoggedIn={isLoggedIn}
+          user={user}
+          refreshUser={refreshUser}
+        />
+      ) : (
+        "Loading....."
+      )}
     </>
   );
 }
