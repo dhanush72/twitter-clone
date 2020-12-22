@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Navigation = () => {
+const Navigation = ({ user }) => {
   return (
     <nav>
       <ul>
@@ -10,7 +10,7 @@ const Navigation = () => {
         </li>
 
         <li>
-          <Link to="/profile">Profile</Link>
+          <Link to="/profile">{user.displayName} Profile</Link>
         </li>
       </ul>
     </nav>
