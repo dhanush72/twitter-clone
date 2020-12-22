@@ -1,19 +1,11 @@
 import React, { useState } from "react";
 import { db, storage } from "../firebase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 const Tweet = ({ newTweet, isOwner }) => {
   const [editing, setEditing] = useState(false);
   const [isEdit, setIsEdit] = useState(newTweet.tweet);
-
-  const onDelete = async () => {
-    const ok = window.confirm("Are you sure you want to delete this tweet?");
-
-    if (ok) {
-      await db.doc(`tweets/${newTweet.id}`).delete();
-      // delete an image
-      await storage.refFromURL(newTweet.attachmentURL).delete();
-    }
-  };
 
   const toggleEditing = () => {
     setEditing(!editing);
@@ -32,32 +24,51 @@ const Tweet = ({ newTweet, isOwner }) => {
     setIsEdit(value);
   };
 
+  const onDeleteClick = async () => {
+    const ok = window.confirm("Are you sure you want to delete this nweet?");
+    if (ok) {
+      await db.doc(`tweets/${newTweet.id}`).delete();
+      await storage.refFromURL(newTweet.attachmentUrl).delete();
+    }
+  };
+
   return (
-    <div>
+    <div className="nweet">
       {editing ? (
         <>
-          <form onSubmit={onSubmit}>
-            <input type="text" value={isEdit} required onChange={onChange} />
-            <input type="submit" value="Update" />
+          <form onSubmit={onSubmit} className="container nweetEdit">
+            <input
+              type="text"
+              value={isEdit}
+              onChange={onChange}
+              className="formInput"
+              required
+              autoFocus
+            />
+            <input type="submit" value="Update" className="formBtn" />
           </form>
-          <button onClick={toggleEditing}> cancel </button>
+
+          <span onClick={toggleEditing} className="formBtn cancelBtn">
+            Cancel
+          </span>
         </>
       ) : (
         <>
-          <h4> {newTweet.tweet} </h4>
-          {newTweet.attachmentURL && (
-            <img
-              src={newTweet.attachmentURL}
-              alt=""
-              width="50px"
-              height="50px"
-            />
-          )}
+          <div style={{ paddingBottom: ".5rem" }}>
+            <h4> {newTweet.tweet} </h4>
+            {newTweet.attachmentURL && (
+              <img src={newTweet.attachmentURL} alt="" />
+            )}
+          </div>
           {isOwner && (
-            <>
-              <button onClick={toggleEditing}>Edit</button>
-              <button onClick={onDelete}>Delete</button>
-            </>
+            <div class="nweet__actions">
+              <span onClick={onDeleteClick}>
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+              <span onClick={toggleEditing}>
+                <FontAwesomeIcon icon={faPencilAlt} />
+              </span>
+            </div>
           )}
         </>
       )}

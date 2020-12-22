@@ -1,91 +1,44 @@
-import React, { useState } from "react";
-import { authService } from "../firebase";
+import React from "react";
+import AuthForm from "../components/AuthForm";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTwitter,
+  faGoogle,
+  faGithub,
+} from "@fortawesome/free-brands-svg-icons";
+import { authService, firebaseInstance } from "../firebase";
 
 const Auth = () => {
-  const [inputValues, setInputValues] = useState({
-    email: "",
-    password: "",
-  });
-  const [newAccount, setNewAccount] = useState(true);
-  const [error, setError] = useState("");
-
-  const toggleAccount = () => {
-    setNewAccount((prev) => !prev);
-  };
-
-  // const onSocialClick = async (e) => {
-  //   const { name } = e.target;
-  //   let provider;
-  //   try {
-  //     if (name === "google") {
-  //       provider = new firebaseInstance.auth.GoogleAuthProvider().then(
-  //         function (authData) {
-  //           console.log("Logged in as:", authData);
-  //         }
-  //       );
-  //     } else if (name === "github") {
-  //       provider = new firebaseInstance.auth.GithubAuthProvider();
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  //   const data = await authService.signInWithPopup(provider);
-  //   console.log(data);
-  // };
-
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setInputValues({
-      ...inputValues,
-      [name]: value,
-    });
-  };
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (newAccount) {
-        // create account
-        await authService.createUserWithEmailAndPassword(
-          inputValues.email,
-          inputValues.password
-        );
-      } else {
-        await authService.signInWithEmailAndPassword(
-          inputValues.email,
-          inputValues.password
-        );
-      }
-    } catch (error) {
-      setError(error.message);
+  const onSocialClick = async (event) => {
+    const {
+      target: { name },
+    } = event;
+    let provider;
+    if (name === "google") {
+      provider = new firebaseInstance.auth.GoogleAuthProvider();
+    } else if (name === "github") {
+      provider = new firebaseInstance.auth.GithubAuthProvider();
     }
+    await authService.signInWithPopup(provider);
   };
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <input
-          type="email"
-          name="email"
-          required
-          placeholder="Email"
-          value={inputValues.email}
-          onChange={onChange}
-        />
-        <input
-          type="password"
-          name="password"
-          required
-          placeholder="Password"
-          value={inputValues.password}
-          onChange={onChange}
-        />
-        <input type="submit" value={newAccount ? "Create Account" : "Signin"} />
-        {error}
-      </form>
-      <span onClick={toggleAccount}>
-        {newAccount ? "Signin" : "Create Account"}
-      </span>
+    <div className="authContainer">
+      <FontAwesomeIcon
+        icon={faTwitter}
+        color={"#04AAFF"}
+        size="3x"
+        style={{ marginBottom: 30 }}
+      />
+      <AuthForm />
+      <div className="authBtns">
+        <button onClick={onSocialClick} name="google" className="authBtn">
+          Continue with Google <FontAwesomeIcon icon={faGoogle} />
+        </button>
+        <button onClick={onSocialClick} name="github" className="authBtn">
+          Continue with Github <FontAwesomeIcon icon={faGithub} />
+        </button>
+      </div>
     </div>
   );
 };

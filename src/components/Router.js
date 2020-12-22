@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Auth from "../routes/Auth";
 import Home from "../routes/Home";
 import Navigation from "./Navigation";
@@ -11,7 +11,16 @@ export const Routers = ({ isLoggedIn, user, refreshUser }) => {
       {isLoggedIn && <Navigation user={user} />}
       <Switch>
         {isLoggedIn ? (
-          <>
+          <div
+            style={{
+              maxWidth: 890,
+              width: "100%",
+              margin: "0 auto",
+              marginTop: 80,
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             <Route exact path="/">
               <Home user={user} />
             </Route>
@@ -19,11 +28,13 @@ export const Routers = ({ isLoggedIn, user, refreshUser }) => {
             <Route exact path="/profile">
               <Profile user={user} refreshUser={refreshUser} />
             </Route>
-          </>
+          </div>
         ) : (
-          <Route exact path="/">
-            <Auth />
-          </Route>
+          <>
+            <Route exact path="/">
+              <Auth />
+            </Route>
+          </>
         )}
       </Switch>
     </Router>
